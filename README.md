@@ -6,5 +6,5 @@ Offers basic functionality for a chat server based on Java Servlet-API. Implemen
 ## Libraries
 Uses following libraries:
  * Jackson [Core](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core/2.10.3), [Annotation](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotation/2.10.3) and [Databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.10.3) in Version 2.10.3
- * Servlet-API from Apache Tomcat 8.5
+ * Servlet-API from [Apache Tomcat 8.5](https://tomcat.apache.org/download-80.cgi)
 
