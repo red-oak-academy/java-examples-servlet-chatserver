@@ -1,0 +1,24 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+  <!--
+    Once upon a time, we declared servlets inside web.xml. Anyways, you still can configure a lot of stuff here.
+    See https://docs.oracle.com/cd/E13222_01/wls/docs81/webapp/web_xml.html
+
+    However, I prefer to declare my Servlets by using the @WebServlet-Annotation.
+  -->
+  <!--
+  <servlet>
+    <servlet-name>auth-servlet</servlet-name>
+    <servlet-class>academy.redoak.servlet.chatserver.http.auth.AuthenticationServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>auth-servlet</servlet-name>
+    <url-pattern>/users</url-pattern>
+  </servlet-mapping>
+  -->
+</web-app>
