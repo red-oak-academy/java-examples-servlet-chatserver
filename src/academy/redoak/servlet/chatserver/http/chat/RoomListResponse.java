@@ -10,7 +10,7 @@ import java.util.Objects;
  * POJO for {@link Response}s of {@link ChatServlet}, when retrieving all rooms. Consists of basic properties from
  * {@link Response} class and has additionally a list of rooms available.
  */
-public class RoomsGetResponse extends Response {
+public class RoomListResponse extends Response {
 
     @JsonProperty
     private List<RoomJson> rooms;
@@ -28,7 +28,7 @@ public class RoomsGetResponse extends Response {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        RoomsGetResponse that = (RoomsGetResponse) o;
+        RoomListResponse that = (RoomListResponse) o;
         return Objects.equals(rooms, that.rooms);
     }
 

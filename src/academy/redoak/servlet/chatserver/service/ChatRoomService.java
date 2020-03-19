@@ -12,11 +12,11 @@ import java.util.UUID;
  * Singleton service offering methods for retrieving chat rooms. Singleton instance may be retrieved
  * by {@link #getInstance()}.
  */
-public class ChatService {
+public class ChatRoomService {
 
     private List<ChatRoom> rooms;
 
-    private ChatService() {
+    private ChatRoomService() {
         // private constructor due to singleton class
         this.rooms = new ArrayList<>();
     }
@@ -55,12 +55,12 @@ public class ChatService {
 
     // --- Singleton
 
-    private static ChatService instance = new ChatService();
+    private static ChatRoomService instance = new ChatRoomService();
 
     /**
      * @return The singleton instance.
      */
-    public static ChatService getInstance() {
+    public static ChatRoomService getInstance() {
         return instance;
     }
 }

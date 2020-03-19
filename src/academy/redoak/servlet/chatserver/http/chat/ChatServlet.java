@@ -5,7 +5,7 @@ import academy.redoak.servlet.chatserver.http.Response;
 import academy.redoak.servlet.chatserver.model.ChatRoom;
 import academy.redoak.servlet.chatserver.model.Message;
 import academy.redoak.servlet.chatserver.model.User;
-import academy.redoak.servlet.chatserver.service.ChatService;
+import academy.redoak.servlet.chatserver.service.ChatRoomService;
 import academy.redoak.servlet.chatserver.util.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @WebServlet("/rooms/*")
 public class ChatServlet extends AbstractChatRoomServlet {
 
-    private ChatService service = ChatService.getInstance();
+    private ChatRoomService service = ChatRoomService.getInstance();
 
     /**
      * <b>
@@ -33,7 +33,7 @@ public class ChatServlet extends AbstractChatRoomServlet {
      * <br/>
      * Handles HTTP GET messages. Path must match following pattern:
      * <code>/rooms/{room_id}</code> <br/>
-     * Where room_id may be omitted. If omitted, all rooms (without contained messages) are retrieved like follows (See {@link RoomsGetResponse}):
+     * Where room_id may be omitted. If omitted, all rooms (without contained messages) are retrieved like follows (See {@link RoomListResponse}):
      * <code>
      *     {
      *          "status": "OK",
@@ -71,7 +71,7 @@ public class ChatServlet extends AbstractChatRoomServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Response response = new RoomsGetResponse();
+        Response response = new RoomListResponse();
         resp.getWriter().write(req.getPathInfo() + "\n");
         try {
             Optional<User> authorizedUser = getAuthorizedUser(req);
@@ -110,8 +110,8 @@ public class ChatServlet extends AbstractChatRoomServlet {
         return response;
     }
 
-    private RoomsGetResponse deliverAllRooms(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        RoomsGetResponse response = new RoomsGetResponse();
+    private RoomListResponse deliverAllRooms(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        RoomListResponse response = new RoomListResponse();
         List<RoomJson> rooms = service.getRooms().stream().map(ChatServlet::toJson).collect(Collectors.toList());
         // just want to return the bare list of chat rooms
         rooms.forEach(r -> r.setMessages(null));
