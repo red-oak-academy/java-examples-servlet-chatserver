@@ -1,5 +1,8 @@
 package academy.redoak.servlet.chatserver.model;
 
+/**
+ * A POJO representing a Message inide a {@link ChatRoom}.
+ */
 public class Message {
 	
 	private User user;

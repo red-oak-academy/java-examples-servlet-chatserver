@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+/**
+ * Base POJO for {@link javax.servlet.http.HttpServlet} responses. Offers base properties like a {@link Status} and
+ * error message.
+ */
 public class Response {
 
     @JsonProperty(required = true)

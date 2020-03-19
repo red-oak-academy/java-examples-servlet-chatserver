@@ -2,6 +2,9 @@ package academy.redoak.servlet.chatserver.model;
 
 import java.util.Objects;
 
+/**
+ * POJO representing a User inside the chat server environment.
+ */
 public class User {
 
     private String id;

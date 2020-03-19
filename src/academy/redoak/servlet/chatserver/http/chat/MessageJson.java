@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+/**
+ * POJO for Jackson mapping representing a {@link academy.redoak.servlet.chatserver.model.Message} object.
+ */
 public class MessageJson {
 
     @JsonProperty

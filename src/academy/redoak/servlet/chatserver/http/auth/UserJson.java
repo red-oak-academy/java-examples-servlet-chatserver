@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+/**
+ * POJO for Jackson mapping representing a {@link academy.redoak.servlet.chatserver.model.User} object.
+ */
 public class UserJson {
 
     @JsonProperty
@@ -40,13 +43,5 @@ public class UserJson {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-
-    @Override
-    public String toString() {
-        return "UserJson{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

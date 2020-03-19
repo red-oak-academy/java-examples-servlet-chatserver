@@ -13,11 +13,36 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Servlet endpoint for registering and removing users.
+ */
 @WebServlet("/users")
 public class AuthenticationServlet extends AbstractChatRoomServlet {
 
     private AuthService authService = AuthService.getInstance();
 
+    /**
+     * <b>
+     *     Requires Authentication! Authenticated user must be declared by
+     *     setting the "auth" header value to the id of the user.
+     * </b>
+     * <br/>
+     * Handles HTTP GET messages. Basically just returns the authenticated user. <br/>
+     * Response will be in Format of the {@link UserJson}.
+     * <br/>
+     * Example: <br/>
+     * <code>
+     *     {
+     *         "status": "OK",
+     *         "user": {
+     *              "name": "Benjamin",
+     *              "id": "0b5f0027-4041-479f-8a20-a16ed1d24a13"
+     *         }
+     *     }
+     * </code>
+     *
+     * @See {@link javax.servlet.http.HttpServlet#doGet(HttpServletRequest, HttpServletResponse)}
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         AuthResponse response = new AuthResponse();
@@ -43,6 +68,28 @@ public class AuthenticationServlet extends AbstractChatRoomServlet {
         }
     }
 
+    /**
+     * Handles HTTP POST messages. Offers the ability to register new users. Request and Response body conform to
+     * the {@link UserJson} schema. Requests only require to have a name. The saved user is being returned in response.
+     * <br/>
+     * Example request: <br/>
+     * <code>
+     *     {
+     *         "name": "Benjamin"
+     *     }
+     * </code>
+     *
+     * Example response: <br/>
+     * <code>
+     *     {
+     *         "status": "OK",
+     *         "user": {
+     *              "name": "Benjamin",
+     *              "id": "0b5f0027-4041-479f-8a20-a16ed1d24a13"
+     *         }
+     *     }
+     * </code>
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         AuthResponse response = new AuthResponse();
@@ -70,6 +117,22 @@ public class AuthenticationServlet extends AbstractChatRoomServlet {
         }
     }
 
+    /**
+     * <b>
+     *     Requires Authentication! Authenticated user must be declared by
+     *     setting the "auth" header value to the id of the user.
+     * </b>
+     * <br/>
+     * Handles HTTP DELETE messages. Deletes the authenticated user.
+     * Doesnt require any request body. Response body consists of meta information only.
+     * <br/>
+     * Example response: <br/>
+     * <code>
+     *     {
+     *         "status": "OK",
+     *     }
+     * </code>
+     */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         AuthResponse response = new AuthResponse();
@@ -98,12 +161,5 @@ public class AuthenticationServlet extends AbstractChatRoomServlet {
         json.setId(user.getId());
         json.setName(user.getName());
         return json;
-    }
-
-    private User fromJson(UserJson json) {
-        User user = new User();
-        user.setName(json.getName());
-        user.setId(json.getId());
-        return user;
     }
 }

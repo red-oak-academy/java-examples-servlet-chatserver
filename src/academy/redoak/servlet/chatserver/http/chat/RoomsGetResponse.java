@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * POJO for {@link Response}s of {@link ChatServlet}, when retrieving all rooms. Consists of basic properties from
+ * {@link Response} class and has additionally a list of rooms available.
+ */
 public class RoomsGetResponse extends Response {
 
     @JsonProperty

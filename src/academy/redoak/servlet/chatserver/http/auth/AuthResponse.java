@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+/**
+ * POJO for {@link Response}s of {@link AuthenticationServlet}. Consists of basic properties from
+ * {@link Response} class and has additionally a user represented by the {@link UserJson} object.
+ */
 public class AuthResponse extends Response {
 
     @JsonProperty
@@ -30,14 +34,5 @@ public class AuthResponse extends Response {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), user);
-    }
-
-    @Override
-    public String toString() {
-        return "AuthResponse{" +
-                "user=" + user +
-                ", status=" + status +
-                ", errorMessage='" + errorMessage + '\'' +
-                '}';
     }
 }

@@ -17,11 +17,58 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Servlet endpoint for retrieving, creating chat rooms and corresponding messages.
+ */
 @WebServlet("/rooms/*")
 public class ChatServlet extends AbstractChatRoomServlet {
 
     private ChatService service = ChatService.getInstance();
 
+    /**
+     * <b>
+     *     Requires Authentication! Authenticated user must be declared by
+     *     setting the "auth" header value to the id of the user.
+     * </b>
+     * <br/>
+     * Handles HTTP GET messages. Path must match following pattern:
+     * <code>/rooms/{room_id}</code> <br/>
+     * Where room_id may be omitted. If omitted, all rooms (without contained messages) are retrieved like follows (See {@link RoomsGetResponse}):
+     * <code>
+     *     {
+     *          "status": "OK",
+     *          "rooms": [
+     *                  {
+     *                      "id": "3a285f0d-3541-4c30-830d-1b4bbad98672",
+     *                      "name": "Group A"
+     *                  }, {
+     *                      "id": "fdda5b1a-497d-4d27-81bf-04560ccacdcd",
+     *                      "name": "Group B"
+     *                  }
+     *          ]
+     *     }
+     * </code>
+     * If a room_id is given, the response may look like that (See {@link SingleRoomResponse}):
+     * <code>
+     *     {
+     *         "status": "OK",
+     *         "room": {
+     *             "id": "3a285f0d-3541-4c30-830d-1b4bbad98672",
+     *             "name": "Group A",
+     *             "messages": [
+     *                 {
+     *                     "username": "Benjamin",
+     *                     "message": "Moin"
+     *                 },
+     *                 {
+     *                     "username": "Benjamin",
+     *                     "message": "Was geht, Freunde?"
+     *                 }
+     *             ]
+     *         }
+     *     }
+     * </code>
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response = new RoomsGetResponse();
@@ -35,7 +82,7 @@ public class ChatServlet extends AbstractChatRoomServlet {
             String pathInfo = req.getPathInfo() != null ? req.getPathInfo(): "/";
             if ("/".equals(pathInfo)) {
                 response = deliverAllRooms(req, resp);
-            } else if (pathInfo.matches("^/[a-zA-Z0-9\\-]{32,36}/?$")) {
+            } else if (pathInfo.matches("^/[a-zA-Z0-9\\-]{36}/?$")) {
                 response = deliverSingleRoom(response,resp, pathInfo.replace("/", ""));
             } else {
                 unknownPath(response, resp);
@@ -66,11 +113,65 @@ public class ChatServlet extends AbstractChatRoomServlet {
     private RoomsGetResponse deliverAllRooms(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         RoomsGetResponse response = new RoomsGetResponse();
         List<RoomJson> rooms = service.getRooms().stream().map(ChatServlet::toJson).collect(Collectors.toList());
+        // just want to return the bare list of chat rooms
+        rooms.forEach(r -> r.setMessages(null));
         response.setRooms(rooms);
         ok(response, resp);
         return response;
     }
 
+    /**
+     * <b>
+     *     Requires Authentication! Authenticated user must be declared by
+     *     setting the "auth" header value to the id of the user.
+     * </b>
+     * <br/>
+     * Handles HTTP POST messages. Path must match following pattern:
+     * <code>/rooms/{room_id}/messages</code> <br/>
+     * <code>room_id</code> may be omitted. If omitted, following messages part must be omitted, too.<br/>
+     * Calling a POST on <code>/rooms</code> without a specific <code>room_id</code> creates a new chat room.
+     * Therefor the request must conform to the {@link RoomJson} schema. See following example request:
+     * <code>
+     *     {
+     *         "name": "Group A"
+     *     }
+     * </code>
+     * As response, the newly created chat room will be shown in the response in {@link SingleRoomResponse} schema:
+     * <code>
+     *     {
+     *          "status": "OK",
+     *          "room": {
+     *              "id": "3a285f0d-3541-4c30-830d-1b4bbad98672",
+     *              "name": "Group A",
+     *              "messages": []
+     *          }
+     *      }
+     * </code>
+     *
+     * When sending a POST on <code>/rooms/{room_id}/messages</code>, a new message is being created in given room.
+     * The request must conform to the {@link MessageJson} schema, see following example:
+     * <code>
+     *     {
+     *         "message": "Moin"
+     *     }
+     * </code>
+     * As response, the chat room with the newest messages will be returned, like following example ({@link SingleRoomResponse} schema again):
+     * <code>
+     *     {
+     *          "status": "OK",
+     *          "room": {
+     *              "id": "3a285f0d-3541-4c30-830d-1b4bbad98672",
+     *              "name": "Group A",
+     *              "messages": [
+     *                  {
+     *                      "username": "Benjamin",
+     *                      "message": "Moin"
+     *                  }
+     *              ]
+     *          }
+     *      }
+     * </code>
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Response response = new SingleRoomResponse();
@@ -85,7 +186,7 @@ public class ChatServlet extends AbstractChatRoomServlet {
             String pathInfo = req.getPathInfo() != null ? req.getPathInfo(): "/";
             if ("/".equals(pathInfo)) {
                 response = createRoom(resp, requestString);
-            } else if (pathInfo.matches("^/[a-zA-Z0-9\\-]{32,36}/messages$")) {
+            } else if (pathInfo.matches("^/[a-zA-Z0-9\\-]{36}/messages$")) {
                 response = postMessage(response,resp, authorizedUser.get(), pathInfo.replace("/messages", "").replace("/",""), requestString);
             } else {
                 unknownPath(response, resp);
